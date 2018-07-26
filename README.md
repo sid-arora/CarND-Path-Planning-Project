@@ -1,6 +1,13 @@
+[image1]: ./output/Output0.png "1"
+[image2]: ./output/Output1.png "2"
+[image3]: ./output/Putput2.png "3"
+[image4]: ./output/Output3.png "4"
+[image5]: ./output/Output4.png "5"
+
+
 # CarND-Path-Planning-Project
 Self-Driving Car Engineer Nanodegree Program
-   
+
 ### Simulator.
 You can download the Term3 Simulator which contains the Path Planning Project from the [releases tab (https://github.com/udacity/self-driving-car-sim/releases/tag/T3_v1.2).
 
@@ -137,4 +144,53 @@ still be compilable with cmake and make./
 
 ## How to write a README
 A well written README file can enhance your project and portfolio.  Develop your abilities to create professional README files by completing [this free course](https://www.udacity.com/course/writing-readmes--ud777).
+
+---------------------------------------------
+
+## Writeup
+
+![alt text][image1]![alt text][image2]![alt text][image3]![alt text][image4]![alt text][image5]
+
+Rubric:
+
+- The code compiles correctly - YES
+- The car is able to drive at least 4.32 miles without incident - YES
+- The car drives according to the speed limit - YES, does not exceed 49.91
+- Max Acceleration and Jerk are not Exceeded -  Did not exceeed acceleration above 10 m/s^2 & jerk above 10 m/s^3
+- Car does not have collisions - No collisions for the 15 miles tested
+- The car stays in its lane, except for the time between changing lanes - YES
+- The car is able to change lanes - YES
+
+
+### Writeup
+
+Starter code taken from [Udacity's CarND-Path-Planning-Project](https://github.com/udacity/CarND-Path-Planning-Project). I started by working through the videos in the lessons. 
+
+The Path Planning code is in src/main.cpp. It is roughly broken up into Prediction, Behavior and Trajectory. 
+
+**Prediction:**  Lines 253 to 303.
+
+We make predictions about the environment we are in based on Telemetry and Sensor fusion data for the following scenarios:
+
+- Whether there a car if in front of us blocking the traffic ?
+- Whether there a car to the left/right of us making a lane change not safe for car ?
+
+We check the lane in which the other car is in and the location it will be at based on the last planned trajectory. If the other car is ot more than 30 metres ahead, no action is taken.
+
+**Behavior:** Lines 305 to 331.
+
+We decide if:
+
+- We accelerate or decelerate ? 
+- We change lanes if feasible in case there is a car ahead of us? 
+
+We maintain a speed difference in **diff_speed** variable, which is used for speed changes when generating the trajectory below. This approach makes the car more responsive acting faster to changing situations.
+
+**Trajectory:** Lines 332 to 444
+
+Calculates trajectory using Past path points, Speed, Lane output from the Behavior module and Car coordinates.
+
+If there is a previous trajectory, the last 2 points are used. If not, the car's position. These are used in conjunction with the 3 points at a far distance to calculate spline.  For spline calculation, the coordinates are transformed (shifted and rotated) to local car coordinates.To get a continuous trajectory, the earlier trajectory points are copied to the new trajectory/ The remaining points are calculated by evaluating the spline & then transforming the output coordinates to local coordinates.
+
+As mentioned above, we maintain a speed difference in **diff_speed** variable, which is used for speed changes when generating the trajectory. For change in velocity of the car, the change is decided in Behavior part, but is used here to increase/decrease speed for every trajectory point. This approach makes the car more responsive acting faster to changing situations.
 
